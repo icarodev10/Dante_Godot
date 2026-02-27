@@ -5,7 +5,7 @@ Um jogo de sobrevivência em arena (Top-Down Shooter) desenvolvido na Godot Engi
 ## 💻 Desafios Técnicos e Aprendizados
 Como desenvolvedor Backend, utilizei este projeto para aplicar conceitos de engenharia de software no desenvolvimento de jogos:
 
-* **Orientação a Objetos (Herança):** Criação de uma classe base de `Inimigo` e derivação para monstros com comportamentos diferentes (Fantasmas lentos, Diabinhos rápidos e o Boss com alto HP).
+* **Orientação a Objetos (Herança):** Criação de uma classe base de `monstros` e derivação para monstros com comportamentos diferentes (Fantasmas lentos, Diabinhos rápidos e o Boss com alto HP).
 * **Lógica de Spawn Seguro (Safe Spawn):** Implementação de um loop de validação (while) com cálculo de vetores (`distance_to`) para garantir que os inimigos nunca nasçam muito perto do jogador.
 * **Máquina de Estados (Progressão):** Sistema dinâmico que altera a dificuldade, a música e o ambiente visual (Círculos do Inferno) com base na pontuação do jogador.
 * **Limitações Matemáticas:** Uso da função `clamp` para manter o jogador dentro dos limites da tela sem a necessidade de criar objetos físicos de colisão (Paredes invisíveis via código).
