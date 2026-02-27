@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://cvw28t5qa7b0y"]
+
+[ext_resource type="Script" uid="uid://bfy5cnlicbjhe" path="res://game_over_tela.gd" id="1_tofen"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1hvkn"]
+font_size = 50
+
+[node name="GameOverTela" type="Control" unique_id=1300962232]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tofen")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=972685313]
+layout_mode = 0
+offset_right = 1156.0
+offset_bottom = 654.0
+color = Color(0, 0, 0, 0.5882353)
+
+[node name="Label" type="Label" parent="." unique_id=87445113]
+layout_mode = 0
+offset_left = 377.0
+offset_top = 263.0
+offset_right = 748.0
+offset_bottom = 332.0
+text = "VOCÊ MORREU!"
+label_settings = SubResource("LabelSettings_1hvkn")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=1219680546]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 345.0
+offset_right = 642.0
+offset_bottom = 381.0
+text = "Tentar Novamente"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

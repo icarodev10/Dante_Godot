@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://b1gso2r8wehpj"]
+
+[ext_resource type="Texture2D" uid="uid://m7e08xbavcyk" path="res://Tiles/tile_0115.png" id="1_jk513"]
+
+[sub_resource type="GDScript" id="GDScript_trs4p"]
+script/source = "extends Area2D
+
+const SPEED = 600.0
+
+func _physics_process(delta):
+	# A bala sempre anda \"pra frente\" na direção que ela estiver apontando
+	# O Vector2.RIGHT rotacionado faz essa mágica
+	var direction = Vector2.RIGHT.rotated(rotation)
+	position += direction * SPEED * delta
+
+# Vamos conectar isso jaja: Se a bala tocar em algo...
+func _on_body_entered(body):
+# 1. SEGURANÇA: Se a bala bateu no próprio Dante, ignora!
+	if body.name == \"Dante\":
+		return
+
+	# 2. Se bateu em monstro
+	if body.is_in_group(\"monstros\"):
+		# Tenta chamar a função de piscar/dano
+		if body.has_method(\"tomar_dano\"):
+			body.tomar_dano()
+		else:
+			body.queue_free() # Se não tiver script, mata direto
+		
+		# 3. O PONTO SÓ VEM AQUI DENTRO!
+		# Se essa linha estiver fora do \"if monstros\", você ganha ponto batendo na parede!
+		get_parent().aumentar_score()
+		
+		# Mata a bala
+		queue_free()
+	
+	# Opcional: Se quiser que a bala suma ao bater na parede (que não é monstro nem Dante)
+	else:
+		queue_free()
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pu3jq"]
+size = Vector2(34, 38)
+
+[node name="Bala" type="Area2D" unique_id=38857241]
+script = SubResource("GDScript_trs4p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1422475857]
+position = Vector2(5, -2)
+shape = SubResource("RectangleShape2D_pu3jq")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1292623277]
+position = Vector2(2.9999924, -4)
+scale = Vector2(3.8125, 3.3125)
+texture = ExtResource("1_jk513")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

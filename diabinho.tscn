@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://b1h62cm2ckgei"]
+
+[ext_resource type="PackedScene" uid="uid://dybmwj3dscyql" path="res://inimigo.tscn" id="1_k2fuv"]
+[ext_resource type="Texture2D" uid="uid://t2sqth6m5m2" path="res://Tiles/tile_0110.png" id="2_lyb6m"]
+
+[node name="Inimigo" unique_id=1471213357 instance=ExtResource("1_k2fuv")]
+scale = Vector2(0.7, 0.7)
+speed = 300.0
+
+[node name="Sprite2D" parent="." index="1" unique_id=1905519463]
+position = Vector2(5.7142715, -4.2857137)
+texture = ExtResource("2_lyb6m")

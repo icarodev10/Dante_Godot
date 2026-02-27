@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dybmwj3dscyql"]
+
+[ext_resource type="Script" uid="uid://df0w1ff7cvicq" path="res://inimigo.gd" id="1_0b8xr"]
+[ext_resource type="Texture2D" uid="uid://rn5xdet0jkjx" path="res://Tiles/tile_0108.png" id="1_030df"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lgngo"]
+size = Vector2(63.75, 59)
+
+[node name="Inimigo" type="CharacterBody2D" unique_id=1471213357 groups=["monstros"]]
+script = ExtResource("1_0b8xr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1579932713]
+position = Vector2(2, -6.5)
+shape = SubResource("RectangleShape2D_lgngo")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1905519463]
+position = Vector2(2, -5.9999924)
+scale = Vector2(5.0624995, 5.1875)
+texture = ExtResource("1_030df")

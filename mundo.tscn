@@ -1,0 +1,224 @@
+[gd_scene format=3 uid="uid://c728aygoomsi3"]
+
+[ext_resource type="Texture2D" uid="uid://duvmv20ko52xp" path="res://Tiles/tile_0084.png" id="1_6ba58"]
+[ext_resource type="Texture2D" uid="uid://civd5hpqfphgv" path="res://Tiles/tile_0048.png" id="1_aou4a"]
+[ext_resource type="Script" uid="uid://d1c43soc2hac0" path="res://dante.gd" id="2_aou4a"]
+[ext_resource type="AudioStream" uid="uid://bw2oh02cg688n" path="res://explosion.wav" id="2_lgngo"]
+[ext_resource type="PackedScene" uid="uid://cvw28t5qa7b0y" path="res://GameOverTela.tscn" id="4_otwa2"]
+
+[sub_resource type="GDScript" id="GDScript_6ba58"]
+script/source = "extends Node2D
+
+# Carrega o molde do inimigo
+var scene_inimigo = preload(\"res://inimigo.tscn\")
+var scene_diabinho = preload(\"res://diabinho.tscn\")
+var scene_boss = preload(\"res://boss.tscn\") 
+
+var mus_limbo = preload(\"res://fase1.mp3\") 
+var mus_luxuria = preload(\"res://fase2.mp3\")
+var mus_boss = preload(\"res://boss.mp3\")
+
+var score = 0
+
+# 1. Carrega a textura do próximo nível
+var textura_luxuria = preload('res://Tiles/tile_0000.png') 
+# DICA: Apague o caminho acima, digite 'res://' e o Godot vai listar seus arquivos pra você escolher.
+
+func _ready():
+	# Inicia a música do Limbo assim que o jogo começar
+	$MusicaFundo.stream = mus_limbo
+	$MusicaFundo.play()
+
+func aumentar_score():
+	score += 1
+	# Atualiza o texto do Label.
+	# O $CanvasLayer/Label é o caminho pra chegar no nó que a gente criou.
+	$CanvasLayer/Label.text = \"Almas: \" + str(score)
+	
+	# 2. O TRIGGER DA MUDANÇA
+	# Quando chegar em 10 mortes, muda o cenário
+	if score == 8:
+		entrar_no_circulo_luxuria()
+		
+	# --- NOVO GATILHO ---
+	if score == 16:
+		invocar_boss()
+		
+func entrar_no_circulo_luxuria():
+	print(\"DESCENDO PARA O 2º CÍRCULO...\")
+	
+	# Troca a imagem do chão (TextureRect)
+	# Certifique-se que o nome do nó do chão é TextureRect mesmo!
+	$TextureRect.texture = textura_luxuria
+	
+	$MusicaFundo.stream = mus_luxuria
+	$MusicaFundo.play()
+	
+	# Aumenta a dificuldade (diminui o tempo de spawn pela metade)
+	$Timer.wait_time = 0.5
+	
+	# Mostra o aviso
+	$CanvasLayer/LabelFase.visible = true
+	
+	# Espera 3 segundos e esconde
+	await get_tree().create_timer(3.0).timeout
+	$CanvasLayer/LabelFase.visible = false
+	
+func invocar_boss():
+	print(\"ALERTA: BOSS INVOCADO!\")
+	
+	$MusicaFundo.stream = mus_boss
+	$MusicaFundo.play()
+	
+	# 1. Desliga o CRON de monstros menores (Deixa a arena limpa pro x1)
+	$Timer.stop() 
+	
+	# 2. Mostra o aviso Épico na tela (reaproveitando aquele Label da fase)
+	$CanvasLayer/LabelFase.text = \"O GUARDIÃO DESPERTOU!\"
+	$CanvasLayer/LabelFase.modulate = Color.DARK_RED # Fica um vermelho ameaçador
+	$CanvasLayer/LabelFase.visible = true
+	
+	# Espera 3 segundos pra sumir o texto
+	await get_tree().create_timer(3.0).timeout
+	$CanvasLayer/LabelFase.visible = false
+	
+	# 3. Spawna o Boss no meio da tela (ou perto disso)
+	var boss = scene_boss.instantiate()
+	# Colocando no meio da tela (assumindo resolução 1152x648)
+	boss.position = Vector2(1152 / 2, 648 / 2) 
+	
+	add_child(boss)
+	
+func vencer_jogo():
+	print(\"O BOSS CAIU! VITÓRIA!\")
+	
+	# Reaproveita o texto da tela
+	$CanvasLayer/LabelFase.text = \"DEMO CONCLUÍDA!\\nVocê sobreviveu.\"
+	$CanvasLayer/LabelFase.modulate = Color.GOLD # Cor de vitória
+	$CanvasLayer/LabelFase.visible = true
+	
+	# Pausa o jogo
+	get_tree().paused = true
+
+func _on_timer_timeout():
+# 2. Variável para guardar quem vai nascer
+	var monstro_da_vez = null
+	
+	# 3. O Sorteio (RNG)
+	# randf() gera um número entre 0.0 e 1.0
+	if randf() < 0.7: 
+		# 70% de chance de ser o Fantasma (Fácil)
+		monstro_da_vez = scene_inimigo.instantiate()
+	else:
+		# 30% de chance de ser o Diabinho (Rápido)
+		monstro_da_vez = scene_diabinho.instantiate()
+	
+# --- NOVO CÓDIGO DE POSIÇÃO SEGURA ---
+	
+	# 1. Pega a referência do Player pra saber onde ele está
+	var dante = $Dante 
+	
+	var posicao_segura = false
+	var tentativa_pos = Vector2.ZERO
+	
+	# 2. O Loop de Validação (While)
+	# Enquanto não achar um lugar seguro, continua sorteando
+	while not posicao_segura:
+		var x = randf_range(0, 1152)
+		var y = randf_range(0, 648)
+		tentativa_pos = Vector2(x, y)
+		
+		# 3. A Validação (Mágica do Godot)
+		# distance_to calcula a distância em pixels entre dois pontos
+		if tentativa_pos.distance_to(dante.global_position) > 300:
+			# Se for maior que 300px, tá aprovado!
+			posicao_segura = true
+	
+	# 4. Aplica a posição aprovada
+	monstro_da_vez.position = tentativa_pos
+	
+	add_child(monstro_da_vez)
+	
+	# --- A NOVA LÓGICA DO CAOS ---
+	
+	# Verifica se o tempo já está muito rápido (limite de 0.5s)
+	if $Timer.wait_time > 0.5:
+		
+		# Se não tiver limite, vai chegar a 0.0s e travar seu PC!
+		
+		# Diminui 0.02 segundos do tempo de espera
+		$Timer.wait_time -= 0.02
+		print(\"Dificuldade Aumentou! Timer: \" + str($Timer.wait_time))
+		
+func game_over():
+	# 1. Mostra a tela de Game Over (busque pelo nome que você deu na árvore)
+	# Se você colocou dentro de um CanvasLayer, o caminho pode ser $CanvasLayer/GameOverTela
+	$CanvasLayer2/GameOverTela.visible = true
+	
+	# 2. PAUSA O JOGO TUDO (Monstros param, Dante para)
+	get_tree().paused = true
+	
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ba58"]
+size = Vector2(72, 80)
+
+[sub_resource type="LabelSettings" id="LabelSettings_6ba58"]
+font_size = 30
+
+[sub_resource type="LabelSettings" id="LabelSettings_aou4a"]
+font_size = 66
+font_color = Color(1, 0, 0, 1)
+
+[node name="Mundo" type="Node2D" unique_id=1239361453]
+script = SubResource("GDScript_6ba58")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=276313074]
+offset_left = -621.0
+offset_top = -442.0
+offset_right = 1150.0
+offset_bottom = 992.0
+texture = ExtResource("1_aou4a")
+stretch_mode = 1
+
+[node name="Dante" type="CharacterBody2D" parent="." unique_id=2120062710]
+script = ExtResource("2_aou4a")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Dante" unique_id=171138748]
+position = Vector2(3, -2)
+shape = SubResource("RectangleShape2D_6ba58")
+
+[node name="Sprite2D" type="Sprite2D" parent="Dante" unique_id=667518124]
+position = Vector2(3.0000153, -9.999996)
+scale = Vector2(5.5292964, 5.75)
+texture = ExtResource("1_6ba58")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="Dante" unique_id=1128369932]
+stream = ExtResource("2_lgngo")
+
+[node name="Timer" type="Timer" parent="." unique_id=289809674]
+autostart = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=355591369]
+
+[node name="Label" type="Label" parent="CanvasLayer" unique_id=1864488056]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Almas: 0"
+label_settings = SubResource("LabelSettings_6ba58")
+
+[node name="LabelFase" type="Label" parent="CanvasLayer" unique_id=935156815]
+visible = false
+offset_right = 40.0
+offset_bottom = 23.0
+text = "CÍRCULO 2: LUXÚRIA"
+label_settings = SubResource("LabelSettings_aou4a")
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="." unique_id=2102267249]
+
+[node name="GameOverTela" parent="CanvasLayer2" unique_id=1300962232 instance=ExtResource("4_otwa2")]
+visible = false
+
+[node name="MusicaFundo" type="AudioStreamPlayer" parent="." unique_id=958915230]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

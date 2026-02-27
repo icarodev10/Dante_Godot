@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://dnebmlnd4skxr"]
+
+[ext_resource type="Script" uid="uid://codi5byjoyu17" path="res://menu_principal.gd" id="1_0oe1n"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ba235"]
+font_size = 60
+
+[node name="MenuPrincipal" type="Control" unique_id=2059969270]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0oe1n")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=582656610]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.39748234, 5.5350364e-07, 1.6845763e-07, 1)
+
+[node name="Label" type="Label" parent="." unique_id=851455671]
+layout_mode = 0
+offset_left = 439.0
+offset_top = 216.0
+offset_right = 721.0
+offset_bottom = 299.0
+text = "A Descida"
+label_settings = SubResource("LabelSettings_ba235")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=1191380087]
+layout_mode = 0
+offset_left = 494.0
+offset_top = 305.0
+offset_right = 670.0
+offset_bottom = 368.0
+theme_override_font_sizes/font_size = 40
+text = "Jogar"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
