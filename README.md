@@ -1,6 +1,6 @@
 # 💀 A Descida de Dante (Godot MVP)
 
-Um jogo de sobrevivência em arena (Top-Down Shooter) desenvolvido na Godot Engine 4. Este projeto foi criado como um MVP (Minimum Viable Product) para praticar lógica de programação, Orientação a Objetos e arquitetura de estados.
+Um jogo de sobrevivência em arena desenvolvido na Godot Engine 4. Este projeto foi criado como um MVP (Minimum Viable Product) para praticar lógica de programação, Orientação a Objetos e arquitetura de estados.
 
 
 
