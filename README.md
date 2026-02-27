@@ -2,6 +2,12 @@
 
 Um jogo de sobrevivência em arena (Top-Down Shooter) desenvolvido na Godot Engine 4. Este projeto foi criado como um MVP (Minimum Viable Product) para praticar lógica de programação, Orientação a Objetos e arquitetura de estados.
 
+
+
+https://github.com/user-attachments/assets/252f080f-4507-4f4a-bb56-63921977d5fa
+
+
+
 ## 💻 Desafios Técnicos e Aprendizados
 Como desenvolvedor Backend, utilizei este projeto para aplicar conceitos de engenharia de software no desenvolvimento de jogos:
 
