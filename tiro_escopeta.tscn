@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://djtvp5nafv6tn"]
+
+[ext_resource type="PackedScene" uid="uid://b1gso2r8wehpj" path="res://bala.tscn" id="1_b2cmi"]
+
+[node name="Bala" unique_id=38857241 instance=ExtResource("1_b2cmi")]
+
+[node name="Sprite2D" parent="." index="1" unique_id=1292623277]
+modulate = Color(0, 1, 0, 1)

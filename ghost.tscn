@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bbj14co5qvmu2"]
+
+[ext_resource type="Texture2D" uid="uid://duvmv20ko52xp" path="res://Tiles/tile_0084.png" id="1_6attn"]
+[ext_resource type="Script" uid="uid://411a538gjmo8" path="res://ghost.gd" id="2_obmiq"]
+
+[node name="Ghost" type="Sprite2D" unique_id=720647300]
+modulate = Color(0, 0, 1, 1)
+position = Vector2(33.5, 34.5)
+scale = Vector2(5.468, 5.6)
+texture = ExtResource("1_6attn")
+script = ExtResource("2_obmiq")
