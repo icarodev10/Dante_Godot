@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c51gigfr57ev"]
+
+[ext_resource type="PackedScene" uid="uid://b1h62cm2ckgei" path="res://diabinho.tscn" id="1_hisaq"]
+[ext_resource type="Script" uid="uid://dxkhw0b08nc8k" path="res://kamikaze.gd" id="2_4epsv"]
+[ext_resource type="Texture2D" uid="uid://dhv08c4thy0p0" path="res://Slime pack/Port tiny_slime yellow.png" id="3_r2cpw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4epsv"]
+size = Vector2(182.85735, 135.71445)
+
+[node name="Inimigo" unique_id=1471213357 instance=ExtResource("1_hisaq")]
+script = ExtResource("2_4epsv")
+
+[node name="CollisionShape2D" parent="." index="0" unique_id=1579932713]
+position = Vector2(-2.857156, -26.42857)
+scale = Vector2(0.9999986, 0.9999986)
+shape = SubResource("RectangleShape2D_4epsv")
+
+[node name="Sprite2D" parent="." index="1" unique_id=1905519463]
+position = Vector2(4.285675, -22.857143)
+texture = ExtResource("3_r2cpw")
+flip_h = true

@@ -3,9 +3,17 @@
 [ext_resource type="PackedScene" uid="uid://dybmwj3dscyql" path="res://inimigo.tscn" id="1_k2fuv"]
 [ext_resource type="Texture2D" uid="uid://t2sqth6m5m2" path="res://Tiles/tile_0110.png" id="2_lyb6m"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lyb6m"]
+size = Vector2(73.64882, 77.14138)
+
 [node name="Inimigo" unique_id=1471213357 instance=ExtResource("1_k2fuv")]
 scale = Vector2(0.7, 0.7)
 speed = 300.0
+
+[node name="CollisionShape2D" parent="." index="0" unique_id=1579932713]
+position = Vector2(7.461318, -10.000751)
+scale = Vector2(0.9999995, 0.9999995)
+shape = SubResource("RectangleShape2D_lyb6m")
 
 [node name="Sprite2D" parent="." index="1" unique_id=1905519463]
 position = Vector2(5.7142715, -4.2857137)

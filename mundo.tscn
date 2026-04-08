@@ -9,8 +9,11 @@
 [sub_resource type="GDScript" id="GDScript_6ba58"]
 script/source = "extends Node2D
 
+var circulo_atual = 1
+
 # Carrega o molde do inimigo
 var scene_inimigo = preload(\"res://inimigo.tscn\")
+var scene_kamikaze = preload(\"res://kamikaze.tscn\")
 var scene_diabinho = preload(\"res://diabinho.tscn\")
 var scene_atirador = preload(\"res://atirador.tscn\")
 var scene_boss = preload(\"res://boss.tscn\") 
@@ -37,6 +40,7 @@ func tremer_tela():
 
 # 1. Carrega a textura do próximo nível
 var textura_luxuria = preload('res://Tiles/tile_0000.png') 
+var textura_caos = preload('res://Tiles/tile_0040.png') 
 # DICA: Apague o caminho acima, digite 'res://' e o Godot vai listar seus arquivos pra você escolher.
 
 func _ready():
@@ -61,9 +65,7 @@ func aumentar_score():
 		
 func entrar_no_circulo_luxuria():
 	print(\"DESCENDO PARA O 2º CÍRCULO...\")
-	
-	# Chama a função de evoluir no Mago
-	$Dante.evoluir_arma() 
+
 	
 	# Troca a imagem do chão (TextureRect)
 	# Certifique-se que o nome do nó do chão é TextureRect mesmo!
@@ -71,9 +73,6 @@ func entrar_no_circulo_luxuria():
 	
 	$MusicaFundo.stream = mus_luxuria
 	$MusicaFundo.play()
-	
-	# Aumenta a dificuldade (diminui o tempo de spawn pela metade)
-	$Timer.wait_time = 0.5
 	
 	# Mostra o aviso
 	$CanvasLayer/LabelFase.visible = true
@@ -114,15 +113,24 @@ func vencer_jogo():
 		Global.high_score = score # Atualiza a variável na memória
 		Global.salvar_jogo()      # Dispara a função que grava o arquivo no disco!
 	
-	print(\"O BOSS CAIU! VITÓRIA!\")
+	print(\"O CICLOPE CAIU!\")
 	
-	# Reaproveita o texto da tela
-	$CanvasLayer/LabelFase.text = \"DEMO CONCLUÍDA!\\nVocê sobreviveu.\"
-	$CanvasLayer/LabelFase.modulate = Color.GOLD # Cor de vitória
+		# Chama a função de evoluir no Mago
+	$Dante.evoluir_arma() 
+	
+	circulo_atual = 3 # AQUI A GENTE ATUALIZA PRA MUDAR O SPAWN
+	
+	# Volta a ligar o relógio de monstros
+	$Timer.start() 
+	
+	$TextureRect.texture = textura_caos
+	
+	# Avisa o jogador
+	$CanvasLayer/LabelFase.text = \"CÍRCULO 3: O CAOS COMEÇA\"
 	$CanvasLayer/LabelFase.visible = true
+	await get_tree().create_timer(3.0).timeout
+	$CanvasLayer/LabelFase.visible = false
 	
-	# Pausa o jogo
-	get_tree().paused = true
 
 func _on_timer_timeout():
 # 2. Variável para guardar quem vai nascer
@@ -132,15 +140,29 @@ func _on_timer_timeout():
 	# randf() gera um número entre 0.0 e 1.0
 # O Sorteio (RNG) atualizado
 	var chance = randf()
-	if chance < 0.6: 
-		# 60% Fantasma
-		monstro_da_vez = scene_inimigo.instantiate()
-	elif chance < 0.85:
-		# 25% Diabinho
-		monstro_da_vez = scene_diabinho.instantiate()
-	else:
-		# 15% Atirador
-		monstro_da_vez = scene_atirador.instantiate()
+# A MÁQUINA DE ESTADOS DAS ONDAS
+	if circulo_atual == 1 or circulo_atual == 2:
+		# Fantasma e Diabinho
+		if chance < 0.7: 
+			monstro_da_vez = scene_inimigo.instantiate()
+		else: 
+			monstro_da_vez = scene_diabinho.instantiate()
+			
+	elif circulo_atual == 3:
+		# PÓS-CICLOPE: Só Atirador e Kamikaze (Sem monstros normais!)
+		if chance < 0.5: 
+			monstro_da_vez = scene_atirador.instantiate()
+		else: 
+			monstro_da_vez = scene_kamikaze.instantiate()
+			
+	elif circulo_atual == 4:
+		# O CAOS FINAL: Fantasma volta + Atirador + Kamikaze
+		if chance < 0.4: 
+			monstro_da_vez = scene_inimigo.instantiate()
+		elif chance < 0.7: 
+			monstro_da_vez = scene_atirador.instantiate()
+		else: 
+			monstro_da_vez = scene_kamikaze.instantiate()
 	
 # --- NOVO CÓDIGO DE POSIÇÃO SEGURA ---
 	
@@ -170,8 +192,8 @@ func _on_timer_timeout():
 	
 	# --- A NOVA LÓGICA DO CAOS ---
 	
-	# Verifica se o tempo já está muito rápido (limite de 0.5s)
-	if $Timer.wait_time > 0.5:
+	# Verifica se o tempo já está muito rápido (limite de 0.6s)
+	if $Timer.wait_time > 0.6:
 		
 		# Se não tiver limite, vai chegar a 0.0s e travar seu PC!
 		

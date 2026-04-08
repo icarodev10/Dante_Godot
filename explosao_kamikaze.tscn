@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bepatkq8oeih7"]
+
+[ext_resource type="PackedScene" uid="uid://c7txi3hec42kv" path="res://Explosao.tscn" id="1_7i2f7"]
+
+[sub_resource type="Curve" id="Curve_pxbji"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Explosao" unique_id=1508445883 instance=ExtResource("1_7i2f7")]
+process_mode = 3
+amount = 50
+lifetime = 2.0
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+angular_velocity_min = 100.0
+angular_velocity_max = 200.0
+scale_amount_min = 3.0
+scale_amount_max = 6.0
+scale_amount_curve = SubResource("Curve_pxbji")
+color = Color(1, 0, 0, 1)
