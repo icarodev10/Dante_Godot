@@ -51,12 +51,9 @@ var textura_abismo = preload('res://swamp.png')
 
 func _ready():
 	
-	invocar_cthulhu()
-	
-	
 	# Inicia a música do Limbo assim que o jogo começar
-	#$MusicaFundo.stream = mus_limbo
-	#$MusicaFundo.play()
+	$MusicaFundo.stream = mus_limbo
+	$MusicaFundo.play()
 
 func aumentar_score():
 	score += 1
