@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b75q315eda16k"]
 
 [ext_resource type="PackedScene" uid="uid://dybmwj3dscyql" path="res://inimigo.tscn" id="1_6xxrv"]
+[ext_resource type="Script" uid="uid://diwjjnm53bp1t" path="res://boss.gd" id="2_lnbgr"]
 [ext_resource type="Texture2D" uid="uid://cv67g6wak2qso" path="res://Tiles/tile_0109.png" id="2_skx2t"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6xxrv"]
@@ -8,8 +9,8 @@ size = Vector2(77.66667, 81.66667)
 
 [node name="Inimigo" unique_id=1471213357 groups=["boss"] instance=ExtResource("1_6xxrv")]
 scale = Vector2(3, 3)
-speed = 80.0
-hp = 20
+script = ExtResource("2_lnbgr")
+hp = 10
 
 [node name="CollisionShape2D" parent="." index="0" unique_id=1579932713]
 position = Vector2(2.1666675, -6.8333335)

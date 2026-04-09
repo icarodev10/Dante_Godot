@@ -21,6 +21,9 @@ var scene_boss = preload(\"res://boss.tscn\")
 var mus_limbo = preload(\"res://fase1.mp3\") 
 var mus_luxuria = preload(\"res://fase2.mp3\")
 var mus_boss = preload(\"res://boss.mp3\")
+var mus_caos = preload(\"res://cir3.mp3\")
+var mus_abismo = preload(\"res://cir4.mp3\")
+var mus_cthulhu = preload(\"res://cthulhu.mp3\")
 
 var score = 0
 
@@ -41,12 +44,19 @@ func tremer_tela():
 # 1. Carrega a textura do próximo nível
 var textura_luxuria = preload('res://Tiles/tile_0000.png') 
 var textura_caos = preload('res://Tiles/tile_0040.png') 
+var textura_void = preload('res://tile_space.png')
+var textura_abismo = preload('res://swamp.png')
+
 # DICA: Apague o caminho acima, digite 'res://' e o Godot vai listar seus arquivos pra você escolher.
 
 func _ready():
+	
+	invocar_cthulhu()
+	
+	
 	# Inicia a música do Limbo assim que o jogo começar
-	$MusicaFundo.stream = mus_limbo
-	$MusicaFundo.play()
+	#$MusicaFundo.stream = mus_limbo
+	#$MusicaFundo.play()
 
 func aumentar_score():
 	score += 1
@@ -54,14 +64,15 @@ func aumentar_score():
 	# O $CanvasLayer/Label é o caminho pra chegar no nó que a gente criou.
 	$CanvasLayer/Label.text = \"Almas: \" + str(score)
 	
-	# 2. O TRIGGER DA MUDANÇA
-	# Quando chegar em 10 mortes, muda o cenário
+# A ESCALADA DO INFERNO:
 	if score == 8:
 		entrar_no_circulo_luxuria()
-		
-	# --- NOVO GATILHO ---
-	if score == 16:
-		invocar_boss()
+	elif score == 16:
+		invocar_boss() # Invoca o Ciclope
+	elif score == 32:
+		entrar_no_circulo_4() # Inicia o Caos Final
+	elif score == 50:
+		invocar_cthulhu() # O Fim dos Tempos
 		
 func entrar_no_circulo_luxuria():
 	print(\"DESCENDO PARA O 2º CÍRCULO...\")
@@ -106,30 +117,79 @@ func invocar_boss():
 	
 	add_child(boss)
 	
-func vencer_jogo():
-	
-	# Se a pontuação atual for maior que o recorde salvo no Singleton...
-	if score > Global.high_score:
-		Global.high_score = score # Atualiza a variável na memória
-		Global.salvar_jogo()      # Dispara a função que grava o arquivo no disco!
-	
+# ==========================================
+# TRANSIÇÕES E CHEFÕES
+# ==========================================
+
+# O que acontece quando o CICLOPE morre
+func derrotar_ciclope():
 	print(\"O CICLOPE CAIU!\")
-	
-		# Chama a função de evoluir no Mago
+	$MusicaFundo.stream = mus_caos
+	$MusicaFundo.play()
 	$Dante.evoluir_arma() 
-	
-	circulo_atual = 3 # AQUI A GENTE ATUALIZA PRA MUDAR O SPAWN
-	
-	# Volta a ligar o relógio de monstros
+	circulo_atual = 3 
 	$Timer.start() 
-	
 	$TextureRect.texture = textura_caos
 	
-	# Avisa o jogador
 	$CanvasLayer/LabelFase.text = \"CÍRCULO 3: O CAOS COMEÇA\"
 	$CanvasLayer/LabelFase.visible = true
 	await get_tree().create_timer(3.0).timeout
 	$CanvasLayer/LabelFase.visible = false
+
+# O que acontece nas 32 almas
+func entrar_no_circulo_4():
+	print(\"CÍRCULO 4: O ABISMO\")
+	circulo_atual = 4
+	$Timer.wait_time = 0.8 # Dá um leve reset na velocidade pra não ficar impossível na hora
+	$MusicaFundo.stream = mus_abismo
+	$MusicaFundo.play()
+	
+	$TextureRect.texture = textura_abismo
+	$CanvasLayer/LabelFase.text = \"CÍRCULO 4: O ABISMO\"
+	$CanvasLayer/LabelFase.modulate = Color.DARK_RED
+	$CanvasLayer/LabelFase.visible = true
+	await get_tree().create_timer(3.0).timeout
+	$CanvasLayer/LabelFase.visible = false
+	$CanvasLayer/LabelFase.modulate = Color.WHITE # Reseta a cor
+
+
+# O que acontece nas 50 almas
+var scene_cthulhu = preload(\"res://cthulhu.tscn\")
+
+func invocar_cthulhu():
+	print(\"O DEUS ANCIÃO DESPERTOU\")
+	$Timer.stop() # Limpa a arena de monstros menores
+	
+	$MusicaFundo.stream = mus_cthulhu
+	$MusicaFundo.play()
+
+	$TextureRect.texture = textura_void
+	$CanvasLayer/LabelFase.text = \"O DEUS ANCIÃO DESPERTOU\"
+	$CanvasLayer/LabelFase.modulate = Color.PURPLE # Uma cor cósmica
+	$CanvasLayer/LabelFase.visible = true
+	await get_tree().create_timer(4.0).timeout
+	$CanvasLayer/LabelFase.visible = false
+
+	
+	var cthulhu = scene_cthulhu.instantiate()
+	# X: 1050 (perto do final da direita) 
+	# Y: 550 (perto do final de baixo)
+	cthulhu.position = Vector2(1050, 550)
+	add_child(cthulhu)
+
+# O que acontece quando o CTHULHU morre
+func vencer_jogo_final():
+	if score > Global.high_score:
+		Global.high_score = score 
+		Global.salvar_jogo() 
+	
+	$CanvasLayer/LabelFase.text = \"VOCÊ ESCAPOU DO INFERNO!\"
+	$CanvasLayer/LabelFase.modulate = Color.YELLOW
+	$CanvasLayer/LabelFase.visible = true
+	
+	# Aqui o jogo acaba de verdade, então a gente congela a tela depois de uns segundos pra comemorar
+	await get_tree().create_timer(4.0).timeout
+	get_tree().paused = true
 	
 
 func _on_timer_timeout():
@@ -150,7 +210,7 @@ func _on_timer_timeout():
 			
 	elif circulo_atual == 3:
 		# PÓS-CICLOPE: Só Atirador e Kamikaze (Sem monstros normais!)
-		if chance < 0.5: 
+		if chance < 0.7: 
 			monstro_da_vez = scene_atirador.instantiate()
 		else: 
 			monstro_da_vez = scene_kamikaze.instantiate()

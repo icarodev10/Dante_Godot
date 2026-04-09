@@ -27,9 +27,7 @@ func _on_body_entered(body):
 		else:
 			body.queue_free() # Se não tiver script, mata direto
 		
-		# 3. O PONTO SÓ VEM AQUI DENTRO!
-		# Se essa linha estiver fora do \"if monstros\", você ganha ponto batendo na parede!
-		get_parent().aumentar_score()
+
 		
 		# Mata a bala
 		queue_free()

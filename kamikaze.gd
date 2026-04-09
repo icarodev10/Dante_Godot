@@ -73,6 +73,8 @@ func tomar_dano():
 	modulate = Color.WHITE
 	
 	if hp <= 0:
+		
+		get_parent().aumentar_score() # <-- Ele só te dá a alma quando o HP zera!
 		# Cria a explosão
 		var nova_explosao = scene_explosao.instantiate()
 		nova_explosao.global_position = global_position
