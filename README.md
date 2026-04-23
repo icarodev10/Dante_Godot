@@ -21,6 +21,11 @@ Como desenvolvedor Backend, utilizei este projeto para aplicar conceitos sólido
 * **Mid-Boss (Ciclope):** Marca a transição para o Círculo 3, suportando alto dano e liberando a evolução de arma (Escopeta).
 * **Final Boss (Cthulhu):** Batalha com múltiplos padrões de ataque randômicos (curto e longo alcance), exigindo leitura de *hitboxes* invisíveis e uso de *i-frames* (Dash) para esquiva.
 
+* V2:
+
+https://github.com/user-attachments/assets/4c398052-2037-4f45-881b-95b7002ff7ec
+
+
 ## 🛠️ Tecnologias
 * Godot Engine 4.x
 * GDScript
